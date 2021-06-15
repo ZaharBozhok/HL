@@ -1,0 +1,68 @@
+# docker-compose.yml
+
+version: "3.9"
+services:
+  mysql-m:
+    image: mysql:8.0
+    platform: linux/x86_64
+    container_name: "mysql-m"
+    env_file:
+      - ./master.env
+    volumes:
+      - ./master.conf:/etc/mysql/conf.d/mysql.conf.cnf
+      - ./master-data:/var/lib/mysql
+    expose:
+      - '3306'
+  
+  mysql-s1:
+    image: mysql:8.0
+    platform: linux/x86_64
+    container_name: "mysql-s1"
+    env_file:
+      - ./slave1.env
+    volumes:
+      - ./slave1.conf:/etc/mysql/conf.d/mysql.conf.cnf
+      - ./slave1-data:/var/lib/mysql
+    expose:
+      - '3306'
+    depends_on: 
+      - mysql-m
+      
+  mysql-s2:
+    image: mysql:8.0
+    platform: linux/x86_64
+    container_name: "mysql-s2"
+    env_file:
+      - ./slave2.env
+    volumes:
+      - ./slave2.conf:/etc/mysql/conf.d/mysql.conf.cnf
+      - ./slave2-data:/var/lib/mysql
+    expose:
+      - '3306'
+    depends_on: 
+      - mysql-m
+
+  phpMyAdmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: "phpMyAdmin"
+    ports:
+      - "80:80"
+    environment: 
+      - PMA_ARBITRARY=1
+      - MYSQL_ROOT_PASSWORD=pass2021
+      - MYSQL_USER=master_2021
+      - MYSQL_PASSWORD=pass2021
+    depends_on: 
+      - mysql-m
+      - mysql-s1
+      - mysql-s2
+  
+  nodeApp:
+    image: node:16
+    container_name: "nodeApp"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./nodeApp:/home/node/app
+    working_dir: /home/node/app
+    command: "npm start"
