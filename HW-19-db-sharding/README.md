@@ -35,3 +35,7 @@ To test insertion time without sharding run:
 `sql-scripts/tests/test-no-sharding.sql`
 ## 6. Compare performance
 On my Macbook air m1 2020 insertion of 1.000.000 rows with horizontal sharding took about 4 minutes, while insertion without sharding about 3 seconds. But it seems like it isn't honest test because docker adds to much impact on interacting with filesystem.
+
+P.S. Most helpful links:
+https://www.postgresql.org/docs/10/ddl-partitioning.html
+https://www.postgresql.org/docs/9.5/postgres-fdw.html
