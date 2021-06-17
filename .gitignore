@@ -105,3 +105,4 @@ dist
 HW-18-db-replication/master-data/
 HW-18-db-replication/slave1-data/
 HW-18-db-replication/slave2-data/
+.DS_Store
